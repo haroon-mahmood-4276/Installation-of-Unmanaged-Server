@@ -34,7 +34,7 @@ sudo apt install ufw
 
 ---
 
-1. [Apache Server](install-apache-server)
+1. [Apache Server](haroon-mahmood-4276/Installation-of-Unmanaged-Server#install-apache-server-install-apache-server)
 2. Second item
 3. Third item
 
