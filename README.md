@@ -37,8 +37,7 @@ sudo apt install ufw
 ---
 
 1. Apache Server
-2. Second item
-3. Third item
+2. MySQL/MariabDB Server
 
 ## Install Apache Server
 
