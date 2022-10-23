@@ -249,3 +249,157 @@ sudo nano /etc/apache2/apache2.conf
 ```
 
 end of the file Include ```/etc/phpmyadmin/apache.conf``` and then ```/etc/init.d/apache2 restart```
+
+## Install PHP (Latest Version)
+
+```command
+sudo apt install software-properties-common
+sudo add-apt-repository ppa:ondrej/php
+```
+
+```command
+sudo apt update
+```
+
+For PHP 8.1
+
+```command
+sudo apt install php8.1 php8.1-cli php8.1-common php8.1-opcache libapache2-mod-php8.1 php8.1-mysql php8.1-zip php8.1-gd php8.1-mbstring php8.1-xml php8.1-bcmath php8.1-bz2 php8.1-intl php8.1-gmp php-json php-pear php8.1-curl php8.1-dev php8.1-xdebug php8.1-pgsql php8.1-fpm php8.1-redis php8.1-intl
+```
+
+For PHP 7.4
+
+```command
+sudo apt install php7.4 php7.4-cli php7.4-common php7.4-opcache libapache2-mod-php7.4 php7.4-mysql php7.4-zip php7.4-gd php7.4-mbstring php7.4-xml php7.4-bcmath php7.4-bz2 php7.4-intl php7.4-gmp php-json php-pear php7.4-curl php7.4-dev php7.4-xdebug php7.4-pgsql php7.4-fpm php7.4-redis php7.4-intl
+```
+
+> To change the php versions of the server
+
+```command
+sudo update-alternatives --config php
+```
+
+and for Apache2
+
+```command
+sudo a2dismod php7.1
+sudo a2enmod php5.6
+sudo service apache2 restart
+```
+
+and then restart apache2 server: ```sudo systemctl restart apache2```
+
+## Setup site
+
+I'm a Laravel Developer that's why I've installed Apache server instead of Ngix. Be my guest to write this document for Ngix as well.
+
+## Laravel Webiste
+
+### For Apache2 Server
+
+> It is recommended use ```your_domain.com``` with ```.com``` or any extension you have.
+
+```command
+mkdir /var/www/your_domain.com
+```
+
+```command
+sudo chown -R $USER:$USER /var/www/your_domain.com
+```
+
+```command
+sudo nano /etc/apache2/sites-available/your_domain.com.conf
+
+<VirtualHost *:80>
+    ServerName your_domain.com
+    ServerAlias www.your_domain.com
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/your_domain.com/public
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
+
+To save the document: ```Ctrl+S``` and for Exit: ```Ctrl+X```
+
+```command
+sudo a2ensite your_domain.com.conf
+sudo a2dissite 000-default
+sudo apache2ctl configtest
+sudo systemctl reload apache2
+```
+
+Clone/Copy site to folder
+
+```command
+git clone git@github.com:haroon-mahmood-4276/your_domain.git your_domain.com
+```
+
+Now install Composer & setup .env
+
+#### Install Composer
+
+```command
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+```
+
+```command
+php -r "if (hash_file('sha384', 'composer-setup.php') === '55ce33d7678c5a611085589f1f3ddf8b3c52d662cd01d4ba75c0ee0459970c2200a51f492d557530c71c15d8dba01eae') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+```
+
+```command
+php composer-setup.php
+```
+
+```command
+php -r "unlink('composer-setup.php');"
+```
+
+Most likely, you want to put the ```composer.phar``` into a directory on your PATH, so you can simply call ```composer``` from any directory (Global install), using for example:
+
+```command
+sudo mv composer.phar /usr/local/bin/composer
+```
+
+For laravel folder permissions
+
+```command
+sudo chown -R $USER:www-data storage
+sudo chown -R $USER:www-data bootstrap/cache
+chmod -R 775 storage
+chmod -R 775 bootstrap/cache
+```
+
+Some Apache2 Configuration
+
+```command
+sudo nano /etc/apache2/apache2.conf
+```
+
+```command
+<Directory /var/www/html/>
+    Options Indexes FollowSymLinks
+    AllowOverride all
+    Require all granted
+</Directory>
+```
+
+```command
+sudo service apache2 restart
+```
+
+## Install SSL
+
+```command
+sudo apt update
+sudo apt install snapd
+sudo snap install core
+sudo snap refresh core
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+```
+
+```command
+sudo certbot --apache -d your_domain.com -d www.your_domain.com
+sudo certbot renew --dry-run
+```
