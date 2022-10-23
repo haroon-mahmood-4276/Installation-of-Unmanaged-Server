@@ -22,6 +22,8 @@ sudo apt update
 sudo apt install nano
 ```
 
+I'll be using nano editor.
+
 ## Installation of Firewall
 
 If you doesn't have firewall installed:
@@ -140,7 +142,7 @@ When promoted for the password enter the SetRootPasswordHere (or whatever you se
 sudo ufw allow 3306
 ```
 
-To enable the remote access of MySQL/MariaDB on the internet.
+> To enable the remote access of MySQL/MariaDB on the internet.
 
 ```command
 sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
@@ -164,3 +166,86 @@ Change bind-address from ```127.0.0.1 -> 0.0.0.0``` and restart server:
 ```command
 sudo systemctl restart mysql
 ```
+
+For Remote Access User
+
+```command
+sudo mysql
+
+UserforAll(localhost)
+CREATE USER 'username'@'localhost' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON *.* TO 'username'@'localhost';
+FLUSH PRIVILEGES;
+
+exit
+```
+
+```command
+sudo mysql
+
+(Remote Access of the Server)
+CREATE USER 'username'@'%' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON *.* TO 'username'@'%';
+FLUSH PRIVILEGES;
+    
+exit
+```
+
+## Install PHPMYADMIN
+
+For more: [How To Install and Secure phpMyAdmin on Ubuntu 22.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-phpmyadmin-on-ubuntu-22-04)
+
+```command
+sudo apt update
+sudo apt install phpmyadmin
+```
+
+Assuming that you've already installed MySQL/MariaDB, you may have decided to enable the Validate Password plugin. As of this writing, enabling this component will trigger an error when you attempt to set a password for the phpmyadmin user: ```select abort```
+
+```command
+sudo mysql
+mysql -u root -p
+UNINSTALL COMPONENT "file://component_validate_password";
+exit
+```
+
+Now again install phpmyadmin
+
+```command
+sudo apt install phpmyadmin
+sudo mysql
+mysql -u root -p
+INSTALL COMPONENT "file://component_validate_password";
+exit
+```
+
+After that run following commands:
+
+```command
+sudo phpenmod mbstring
+sudo systemctl restart apache2
+```
+
+Now we have to set password, you can use a new one or set previous password as well
+
+```command
+sudo mysql
+sudo mysql -u root -p
+```
+
+```command
+SELECT user,authentication_string,plugin,host FROM mysql.user;
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'your_password';
+```
+
+```command
+SELECT user,authentication_string,plugin,host FROM mysql.user;
+```
+
+> Do this otherwise you phpmyadmin link will not work
+
+```command
+sudo nano /etc/apache2/apache2.conf
+```
+
+end of the file Include ```/etc/phpmyadmin/apache.conf``` and then ```/etc/init.d/apache2 restart```
