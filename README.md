@@ -1,4 +1,4 @@
-# Installation of Unmanaged Server
+# Install Apache2, MySQL/MariaDB, PHP, PHPMyAdmin, Webite hosting With SSL
 
 > Note: This document is for beginners. I've also added seprate links for details. Always welcome for contributions.
 
