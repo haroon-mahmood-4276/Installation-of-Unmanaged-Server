@@ -1,3 +1,5 @@
+
+
 # Install Apache2, MySQL/MariaDB, PHP, PHPMyAdmin, Webite hosting With SSL
 
 > Note: This document is for beginners. I've also added seprate links for details. Always welcome for contributions.
@@ -318,11 +320,19 @@ sudo nano /etc/apache2/sites-available/your_domain.com.conf
 
 <VirtualHost *:80>
     ServerName your_domain.com
-    ServerAlias www.your_domain.com
-    ServerAdmin webmaster@localhost
+    ServerAlias *.your_domain.com
     DocumentRoot /var/www/your_domain.com/public
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+    <Directory /var/www/your_domain.com/public>
+        Options -Indexes +FollowSymLinks +MultiViews
+        AllowOverride All
+        Require all granted
+        Order allow,deny
+        allow from all
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/your_domain-error.log
+    CustomLog ${APACHE_LOG_DIR}/your_domain-access.log combined
 </VirtualHost>
 ```
 
