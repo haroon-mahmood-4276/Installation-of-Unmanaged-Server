@@ -261,6 +261,12 @@ sudo add-apt-repository ppa:ondrej/php
 sudo apt update
 ```
 
+For PHP 8.2
+
+```command
+sudo apt install php8.2 php8.2-cli php8.2-common php8.2-opcache libapache2-mod-php8.2 php8.2-mysql php8.2-zip php8.2-gd php8.2-mbstring php8.2-xml php8.2-bcmath php8.2-bz2 php8.2-intl php8.2-gmp php-json php-pear php8.2-curl php8.2-dev php8.2-xdebug php8.2-pgsql php8.2-fpm php8.2-redis php8.2-intl
+```
+
 For PHP 8.1
 
 ```command
